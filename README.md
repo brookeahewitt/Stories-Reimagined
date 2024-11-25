@@ -1,9 +1,9 @@
 # Stories-Reimagined
 
-Run the virtual environment
+Run the virtual environment:
 . ollama/Scripts/activate
 
-Download Ollama
+Download Ollama:
 pip install ollama
 
 Run the program
