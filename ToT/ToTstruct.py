@@ -1,4 +1,5 @@
 from ToTprompts import * 
+import re
 
 '''
 BREAKDOWN:
@@ -32,7 +33,7 @@ class ToTStories():
         self.depth = 0 #tracks response amount of conversation, default of 5
         self.max_depth = max_depth 
 
-    def parse_LLM(llm_response):
+    def parse_LLM(self, llm_response):
          # TODO: Parse response to find the delimiters "story #)" and attach to appropriate Node
         if self.depth > self.max_depth: #Max depth reached!
              return None
@@ -40,14 +41,34 @@ class ToTStories():
         self.depth +=1
         return self.depth
     
-    def return_stories(user_response):
-         # TODO: Return appropriate prompt (based on user_response) and attached stories to said prompt 
-        
+    def return_stories(self, user_response):
+         # TODO: Return appropriate prompt (based on user_response) and attached stories to said prompt
+
         if self.depth > self.max_depth:
             
             return #final prompt here!
         
-        return #critique prompt here!
+        pattern = r"story (\d+)" 
+        matches = re.findall(pattern, user_response, re.IGNORECASE)
+
+        thought_list = []
+        for i in range(len(matches)):
+            thought_list.append(self.__find_node_by_id(self.root,int(matches[i])))
+
+        c_prompt = critique_prompt(user_response, thought_list)
+
+        return c_prompt
+    
+    def __find_node_by_id(self, node, id):
+        if node.id == id:
+            return node
+        
+        for child in node.children:
+            result = self.__find_node_by_id(child, id)
+            if result is not None:
+                return result
+        
+        return None
 
     
 

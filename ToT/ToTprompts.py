@@ -10,7 +10,7 @@ def starting_prompt(user_input):
 
     Story 3) Your third story idea here
 
-    Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number."
+    Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, story 1 is good but story 2 is bad)."
     '''
 
     return g_prompt.format(input=user_input)
