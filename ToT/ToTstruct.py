@@ -60,10 +60,6 @@ class ToTStories():
     
     def return_stories(self, user_response):
          # TODO: Return appropriate prompt (based on user_response) and attached stories to said prompt
-
-        if self.depth == self.max_depth:
-            
-            return #final prompt here!
         
         story_label = r"story (\d+)" 
         matches = re.findall(story_label, user_response, re.IGNORECASE)
@@ -73,6 +69,9 @@ class ToTStories():
             thought_list.append(self.__find_node_by_id(self.root,int(matches[i])))
         
         thought_list = [thought for thought in thought_list if thought is not None] #removing Nones
+
+        if self.depth == self.max_depth:
+            return finish_prompt(user_response,thought_list)
 
         if len(thought_list) >= 1: 
             self.current_idea = thought_list[0] #the first mentioned thought is the basis for new roots

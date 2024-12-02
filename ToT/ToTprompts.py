@@ -10,29 +10,30 @@ def starting_prompt(user_input):
 
     Story 3) Your third story idea here
 
-    Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, story 1 is good but story 2 is bad)."
+    Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, 'story 1 is good but story 2 is bad')."
     '''
 
     return g_prompt.format(input=user_input)
 
-def critique_prompt(user_input, story_nodes_list):
+def critique_prompt(user_input, story_nodes_list, highest_id):
 
     #TODO: parse given story node list, add to the prompt, make sure to have the new story format start with the new highest id
+    stories = "\n".join([f"Story {node.id}: {node.story}" for node in story_nodes_list])
 
-    #TODO Finish creating critique prompt
-    c_prompt = '''Create or adjust 3 new stories based on the following critique: {u_input}
+    c_prompt = f'''Create or adjust 3 new stories based on the following critique: {user_input}
 
-    The critique is referencing these stories: {stories} 
+    The critique is referencing these stories: {stories}  
 
-    Each story should be labeled numerically starting with the number "{new_max_id}" in the following format:
+    Each story should be labeled numerically increasing by 1 starting with the number "{highest_id}" in the following starting format:
 
+    Story {highest_id}) Your first story here
 
+    Story {highest_id+1}) Your second story here
+
+    Story {highest_id+2}) Your third story here
     
-    
-    
+    Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, 'story 1 is good but story 2 is bad')."
     '''
-
-    #TODO: format c_prompt
 
     return c_prompt
 
@@ -40,9 +41,11 @@ def finish_prompt(user_input, story_nodes_list):
 
     #TODO: Write a prompt that writes the ultimate story based on all the past critique
 
-    f_prompt='''
+    stories = "\n".join([f"Story {node.id}: {node.story}" for node in story_nodes_list])
 
+    f_prompt=f'''Create a final long story based on this critique: {user_input}
+
+    The critique is referencing these stories: {stories}  
     '''
-    #TODO: format f_prompt
 
     return f_prompt
