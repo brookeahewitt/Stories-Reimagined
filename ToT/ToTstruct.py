@@ -30,13 +30,30 @@ class ToTStories():
 
     def __init__(self, starting_user_input, max_depth = 5):
         self.root = ThoughtNode(0, starting_prompt(starting_user_input))
-        self.depth = 0 #tracks response amount of conversation, default of 5
+        self.current_idea = self.root #what node are we ideating off of?
+        self.highest_id = 0
+        self.depth = 0 #tracks response amount of conversation
         self.max_depth = max_depth 
 
     def parse_LLM(self, llm_response):
          # TODO: Parse response to find the delimiters "story #)" and attach to appropriate Node
-        if self.depth > self.max_depth: #Max depth reached!
-             return None
+        if self.depth == self.max_depth: #Max depth reached!
+             print("Max Depth Reached! Returning Max Depth")
+             return self.max_depth
+        
+        story_label = r'(story \d+\))'
+
+        stories = re.split(story_label, llm_response, flags=re.IGNORECASE)
+        stories = [story.strip() for story in stories if story.strip()]
+
+    
+        for i in range(0, len(stories), 2):
+            story_label = stories[i]
+            story_content = stories[i+1]
+            story = self.current_idea.add_child(story_label,story_content)
+            if story.id > self.highest_id:
+                self.highest_id = story.id
+            
 
         self.depth +=1
         return self.depth
@@ -44,18 +61,24 @@ class ToTStories():
     def return_stories(self, user_response):
          # TODO: Return appropriate prompt (based on user_response) and attached stories to said prompt
 
-        if self.depth > self.max_depth:
+        if self.depth == self.max_depth:
             
             return #final prompt here!
         
-        pattern = r"story (\d+)" 
-        matches = re.findall(pattern, user_response, re.IGNORECASE)
+        story_label = r"story (\d+)" 
+        matches = re.findall(story_label, user_response, re.IGNORECASE)
 
         thought_list = []
         for i in range(len(matches)):
             thought_list.append(self.__find_node_by_id(self.root,int(matches[i])))
+        
+        thought_list = [thought for thought in thought_list if thought is not None] #removing Nones
 
-        c_prompt = critique_prompt(user_response, thought_list)
+        if len(thought_list) >= 1: 
+            self.current_idea = thought_list[0] #the first mentioned thought is the basis for new roots
+            # TODO: Change this to reflect the critisism? (if talking about multiple stories, make trees appropriatly)
+
+        c_prompt = critique_prompt(user_response, thought_list, self.highest_id)
 
         return c_prompt
     
