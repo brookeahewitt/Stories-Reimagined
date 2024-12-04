@@ -2,10 +2,10 @@ import pandas as pd
 from sklearn.metrics import cohen_kappa_score
 from itertools import combinations
 
-df = pd.read_csv('data.csv')
+df = pd.read_csv('survey_results.csv')
 print(df)
 
-metrics = df['novel_scores', 'feasibility_scores', 'effective_scores', 'excited_scores', 'overall_scores']
+metrics = df[['novel_score', 'feasibility_score', 'effective_score', 'excited_score', 'overall_score']]
 
 # Print to check data
 print(metrics)
@@ -13,6 +13,7 @@ print(metrics)
 raters = df['rater'].unique()
 
 # Print to check data
+print('\n')
 print(raters)
 
 
@@ -34,7 +35,7 @@ def calculate_kappas(df, metric):
 all_metric_kappas = {}
 
 for metric in metrics:
-    print(f"Metric: {metric}")
+    print(f"\nMetric: {metric}")
 
     kappas = calculate_kappas(df, metric)
     all_metric_kappas[metric] = kappas
@@ -47,14 +48,17 @@ for metric in metrics:
 combined_kappas = []
 pairs = combinations(raters, 2)
 
+print('\n')
+
 for rater1, rater2 in pairs:
-    r1_scores = df[df['rater'] == rater1][metrics].values.flatten()
-    r2_scores = df[df['rater'] == rater2][metrics].values.flatten()
+    r1_scores = df[df['rater'] == rater1][['novel_score', 'feasibility_score', 'effective_score', 'excited_score', 'overall_score']].values.flatten()
+    r2_scores = df[df['rater'] == rater2][['novel_score', 'feasibility_score', 'effective_score', 'excited_score', 'overall_score']].values.flatten()
     kappa = cohen_kappa_score(r1_scores, r2_scores)
     combined_kappas.append((rater1, rater2, kappa))
     print(f"Global {rater1} vs {rater2}: Kappa = {kappa:.2f}")
 
-# Summary of Mean Kappa Scores
+
+# Summary of mean kappa scores
 metric_mean_kappas = {metric: sum(k[2] for k in scores) / len(scores) for metric, scores in all_metric_kappas.items()}
 global_mean_kappa = sum(k[2] for k in combined_kappas) / len(combined_kappas)
 

@@ -1,0 +1,13 @@
+﻿rater,story,novel_score,feasibility_score,effective_score,excited_score,overall_score,novel_reason,feasibility_reason,effective_reason,excited_reason,overall_reason
+rater1,s1,8,2,6,5,2,reason,reason,reason,reason,reason
+rater1,s2,5,6,5,6,3,reason,reason,reason,reason,reason
+rater1,s3,3,9,3,7,4,reason,reason,reason,reason,reason
+rater2,s1,4,5,2,8,5,reason,reason,reason,reason,reason
+rater2,s2,6,3,9,4,7,reason,reason,reason,reason,reason
+rater2,s3,8,5,7,3,8,reason,reason,reason,reason,reason
+rater3,s1,3,9,5,1,6,reason,reason,reason,reason,reason
+rater3,s2,1,3,3,3,7,reason,reason,reason,reason,reason
+rater3,s3,3,6,2,5,3,reason,reason,reason,reason,reason
+rater4,s1,6,8,7,6,1,reason,reason,reason,reason,reason
+rater4,s2,5,9,8,8,5,reason,reason,reason,reason,reason
+rater4,s3,8,10,9,4,6,reason,reason,reason,reason,reason
