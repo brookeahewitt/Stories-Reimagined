@@ -1,4 +1,4 @@
-from ToTprompts import * 
+from .ToTprompts import * 
 import re
 
 '''
@@ -29,7 +29,7 @@ class ThoughtNode():
 class ToTStories():
 
     def __init__(self, starting_user_input, max_depth = 5):
-        self.root = ThoughtNode(0, starting_prompt(starting_user_input))
+        self.root = ThoughtNode(0, starting_user_input)
         self.current_idea = self.root #what node are we ideating off of?
         self.highest_id = 0
         self.depth = 0 #tracks response amount of conversation
@@ -41,18 +41,23 @@ class ToTStories():
              print("Max Depth Reached! Returning Max Depth")
              return self.max_depth
         
-        story_label = r'(story \d+\))'
+        story_label = r'(story \d+:)'
 
         stories = re.split(story_label, llm_response, flags=re.IGNORECASE)
         stories = [story.strip() for story in stories if story.strip()]
 
+        ## TODO: Remove the non relevant text before story 1) if it exists!
+
     
         for i in range(0, len(stories), 2):
+            print(stories)
             story_label = stories[i]
             story_content = stories[i+1]
-            story = self.current_idea.add_child(story_label,story_content)
-            if story.id > self.highest_id:
-                self.highest_id = story.id
+            pattern = r"(?i)\bstory\s+(\d+):"
+            num = re.search(pattern, story_label)
+            story = self.current_idea.add_child(int(num),story_content)
+            if int(story.id) > self.highest_id:
+                self.highest_id = int(story.id)
             
 
         self.depth +=1
@@ -61,7 +66,10 @@ class ToTStories():
     def return_stories(self, user_response):
          # TODO: Return appropriate prompt (based on user_response) and attached stories to said prompt
         
-        story_label = r"story (\d+)" 
+        if self.depth == 0:
+            return starting_prompt(user_response)
+
+        story_label = r"story \s+\d+:" 
         matches = re.findall(story_label, user_response, re.IGNORECASE)
 
         thought_list = []

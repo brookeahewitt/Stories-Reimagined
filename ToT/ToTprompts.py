@@ -4,11 +4,11 @@ def starting_prompt(user_input):
 
     Each story should be labeled numerically in the following format:
 
-    Story 1) Your first story idea here
+    Story 1: Your first story idea here
 
-    Story 2) Your second story idea here 
+    Story 2: Your second story idea here 
 
-    Story 3) Your third story idea here
+    Story 3: Your third story idea here
 
     Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, 'story 1 is good but story 2 is bad')."
     '''
@@ -26,11 +26,11 @@ def critique_prompt(user_input, story_nodes_list, highest_id):
 
     Each story should be labeled numerically increasing by 1 starting with the number "{highest_id}" in the following starting format:
 
-    Story {highest_id}) Your first story here
+    Story {highest_id}: Your first story here
 
-    Story {highest_id+1}) Your second story here
+    Story {highest_id+1}: Your second story here
 
-    Story {highest_id+2}) Your third story here
+    Story {highest_id+2}: Your third story here
     
     Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, 'story 1 is good but story 2 is bad')."
     '''
