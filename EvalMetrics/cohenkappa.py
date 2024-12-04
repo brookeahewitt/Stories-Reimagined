@@ -43,6 +43,7 @@ for metric in metrics:
     for rater1, rater2, kappa in kappas:
         print(f"  {rater1} vs {rater2}: Kappa = {kappa:.2f}")
 
+# TODO: Likely will want to do the below process for human-generated and human+AI-generated stories separately
 
 # Global agreement across all metrics
 combined_kappas = []
