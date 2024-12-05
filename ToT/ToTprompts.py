@@ -24,13 +24,13 @@ def critique_prompt(user_input, story_nodes_list, highest_id):
 
     The critique is referencing these stories: {stories}  
 
-    Each story should be labeled numerically increasing by 1 starting with the number "{highest_id}" in the following starting format:
+    Each story should be labeled numerically increasing by 1 starting with the number "{highest_id+1}" in the following starting format:
 
-    Story {highest_id}: Your first story here
+    Story {highest_id+1}: Your first story here
 
-    Story {highest_id+1}: Your second story here
+    Story {highest_id+2}: Your second story here
 
-    Story {highest_id+2}: Your third story here
+    Story {highest_id+3}: Your third story here
     
     Finally, ask me at the end "Would like to expand on these ideas? Please mention which story you liked or disliked with the appropriate number (for example, 'story 1 is good but story 2 is bad')."
     '''
