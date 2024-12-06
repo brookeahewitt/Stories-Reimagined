@@ -36,25 +36,29 @@ class ToTStories():
         self.max_depth = max_depth 
 
     def parse_LLM(self, llm_response):
-         # TODO: Parse response to find the delimiters "story #)" and attach to appropriate Node
         if self.depth == self.max_depth: #Max depth reached!
              print("Max Depth Reached! Returning Max Depth")
              return self.max_depth
         
-        story_label = r'(story \d+:)'
+        story_label = r'(\*\*story \d+:)'
 
         stories = re.split(story_label, llm_response, flags=re.IGNORECASE)
         stories = [story.strip() for story in stories if story.strip()]
 
-        ## TODO: Remove the non relevant text before story 1) if it exists!
+        # Remove the non relevant text before story 1) if it exists!
+        for i, cell in enumerate(stories):
+            if re.search(story_label, cell, flags=re.IGNORECASE):
+                # Return the array starting from the match
+                stories = stories[i:]
+                break
 
-    
+        print(stories) # for bugfixing
+
         for i in range(0, len(stories), 2):
-            print(stories)
             story_label = stories[i]
             story_content = stories[i+1]
             pattern = r"(?i)\bstory\s+(\d+):"
-            num = re.search(pattern, story_label)
+            num = re.search(pattern, story_label).group(1)
             story = self.current_idea.add_child(int(num),story_content)
             if int(story.id) > self.highest_id:
                 self.highest_id = int(story.id)
@@ -69,14 +73,20 @@ class ToTStories():
         if self.depth == 0:
             return starting_prompt(user_response)
 
-        story_label = r"story \s+\d+:" 
+        story_label = r"story (\d+)" 
         matches = re.findall(story_label, user_response, re.IGNORECASE)
+        print(matches)
+
 
         thought_list = []
         for i in range(len(matches)):
+            #print(matches[i])
             thought_list.append(self.__find_node_by_id(self.root,int(matches[i])))
         
+        
         thought_list = [thought for thought in thought_list if thought is not None] #removing Nones
+
+        print(thought_list)
 
         if self.depth == self.max_depth:
             return finish_prompt(user_response,thought_list)

@@ -19,13 +19,14 @@ response = ollama.chat(model=desiredModel, messages=[
     }
 ])
 
+max_depth = int(input("Please input the max depth of ToT:"))
+
 OllamaResponse = response['message']['content']
 print("Chatbot: " + OllamaResponse)
 
 
-
 # Now, loop to allow back and forth conversation
-for i in range(10):
+for i in range(max_depth+1):
     # Get user input for the next prompt
     user_input = input("\nYou: ")
 
@@ -36,7 +37,7 @@ for i in range(10):
 
     # initialize Tree if first time
     if i == 0:
-        ThoughtTree = ToTStories(user_input)
+        ThoughtTree = ToTStories(user_input, max_depth)
 
     #Get prompt
     user_prompt = ThoughtTree.return_stories(user_input)
@@ -61,7 +62,4 @@ for i in range(10):
 
     depth = ThoughtTree.parse_LLM(OllamaResponse)
 
-    print("Chatbot: " + OllamaResponse)
-    
-    if depth == ThoughtTree.max_depth:
-        break
+print("ToT Finished!")
