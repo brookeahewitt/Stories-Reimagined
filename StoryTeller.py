@@ -1,9 +1,7 @@
-import ollama
-from MAD.MADprompts import story_intro_prompt
-from MAD.MADstruct import initialize_chat_history, MAD_loop
+from MAD.MADprompts import *
+from MAD.MADstruct import *
 
 # This file includes the ToT-to-MAD pipeline
-
 # Initialize chat history
 proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = initialize_chat_history()
 print("Author:", story_intro_prompt())

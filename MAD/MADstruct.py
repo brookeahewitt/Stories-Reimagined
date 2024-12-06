@@ -1,5 +1,5 @@
 import ollama
-from MADprompts import author_background_prompt, proponent_background_prompt, opponent_background_prompt, moderator_background_prompt
+from MAD.MADprompts import *
 
 # ollama server
 desiredModel = 'llama3.1:8b'
@@ -34,12 +34,12 @@ def update_moderator(moderator_chat_history, role, string):
 
 
 # Loop for back and forth conversation
-def MAD_loop(ToT_result=None, proponent_chat_history=[], moderator_chat_history=[], opponent_chat_history=[], author_chat_history=[]):
+def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], opponent_chat_history=[], author_chat_history=[]):
     i = 0
 
     while True:
-        if i == 0 and ToT_result is None:
-            user_input = "\nYou: " + ToT_result
+        if i == 0 and ToT_result is not None:
+            user_input = "\nYou: " + str(ToT_result)
         else:
             user_input = input("\nYou: ")
 
