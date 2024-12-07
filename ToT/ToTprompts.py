@@ -43,9 +43,15 @@ def finish_prompt(user_input, story_nodes_list):
 
     stories = "\n".join([f"Story {node.id}: {node.story}" for node in story_nodes_list])
 
-    f_prompt=f'''Create a final long story based on this critique: {user_input}
+    f_prompt=f'''Create a final long story under 800 words based on this critique: {user_input}
 
     The critique is referencing these stories: {stories}  
+
+    Your output should only be a story and should be labeled in the following format:
+
+    **Story:Your story title here** Your story here
+
+    Finally, end the story with **The End**
     '''
 
     return f_prompt
