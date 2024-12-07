@@ -4,9 +4,7 @@ from ToT.TreeofThoughts import *
 import argparse
 import sys
 
-
 parser = argparse.ArgumentParser(description="Use the following flags to customize StoryTeller")
-    
 
 parser.add_argument(
     '--story', 
@@ -17,7 +15,7 @@ parser.add_argument(
 parser.add_argument(
     '--human', 
     action='store_true', 
-    help= "If input, then story feedback in Tree of Thoughts is done by human input, rather than semi-random critisism"
+    help= "If input is true, then story feedback in Tree of Thoughts is done by human input, rather than semi-random critisism"
 )
 parser.add_argument(
     '--depth', 
@@ -25,9 +23,17 @@ parser.add_argument(
     default=2, 
     help="Number for depth for the Tree of Thoughts. Default is 2."
 )
+parser.add_argument(
+    '--rounds', 
+    type=int, 
+    default=2, 
+    help="Number for rounds for MAD between Proponent and Opponent. Default is 2."
+)
 
 args = parser.parse_args()
 
+
+story_string = None
 
 # Validate story file
 if args.story is not None:
@@ -45,7 +51,6 @@ if args.story is not None:
         sys.exit(1)
 
 
-
 # This file includes the ToT-to-MAD pipeline
 # Initialize chat history
 proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = initialize_chat_history()
@@ -57,4 +62,4 @@ ToT_result = ToTloop(given_story = story_string, human_response= args.human, max
 
 
 # Can leave ToT_result as None if want to run MAD loop by itself
-MAD_loop(ToT_result, proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history)
+MAD_loop(ToT_result, proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, args.rounds)

@@ -34,7 +34,7 @@ def update_moderator(moderator_chat_history, role, string):
 
 
 # Loop for back and forth conversation
-def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], opponent_chat_history=[], author_chat_history=[]):
+def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], opponent_chat_history=[], author_chat_history=[], round_num=2):
     i = 0
 
     while True:
@@ -66,7 +66,7 @@ def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], o
         update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
 
         # Debate rounds
-        for round_num in range(2):
+        for _ in range(round_num):
             # Proponent's response
             proponent_response = ollama.chat(model=desiredModel, messages=proponent_chat_history)['message']['content']
             print('\nProponent:', proponent_response)
@@ -97,3 +97,5 @@ def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], o
         # Author generates the final story
         author_response = ollama.chat(model=desiredModel, messages=author_chat_history)['message']['content']
         print('\nAuthor:', author_response)
+
+        i += 1
