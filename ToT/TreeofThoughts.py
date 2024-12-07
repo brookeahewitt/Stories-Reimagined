@@ -55,14 +55,14 @@ def ToTloop(given_story = None, human_response = True, max_depth = 2):
                     story_1_num = random.randint(1,max_num_stories)
                     story_2_num = random.randint(1,max_num_stories)
                     while story_1_num == story_2_num: #if they match, reroll
-                        story_2_num = random.ranint(1,max_num_stories)
+                        story_2_num = random.randint(1,max_num_stories)
                     user_input = f"I liked Story {story_1_num} and Story {story_2_num}. Combine them!"
                 ## Disliked one, liked one
                 elif story_reaction == 3:
                     story_1_num = random.randint(1,max_num_stories)
                     story_2_num = random.randint(1,max_num_stories)
                     while story_1_num == story_2_num: #if they match, reroll
-                        story_2_num = random.ranint(1,max_num_stories)
+                        story_2_num = random.randint(1,max_num_stories)
                     user_input = f"I liked Story {story_1_num} , but I also disliked Story {story_2_num}."
                 ## Disliked one
                 else:
