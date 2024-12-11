@@ -1,4 +1,5 @@
 import ollama
+import sys
 from MAD.MADprompts import *
 
 # ollama server
@@ -37,65 +38,65 @@ def update_moderator(moderator_chat_history, role, string):
 def MAD_loop(ToT_result, proponent_chat_history=[], moderator_chat_history=[], opponent_chat_history=[], author_chat_history=[], round_num=2):
     i = 0
 
-    while True:
-        if i == 0 and ToT_result is not None:
-            user_input = "\nYou: " + str(ToT_result)
-        else:
-            user_input = input("\nYou: ")
+    if i == 0 and ToT_result is not None:
+        user_input = "\nYou: " + str(ToT_result)
+    else:
+        user_input = input("\nYou: ")
 
-        if user_input.lower() == 'exit':
-            print("Goodbye!")
-            break
-        
-        # Add user input to all chat histories
-        roles = ['user', 'user', 'user', 'user']
-        strings = [user_input, user_input, user_input, user_input]
-        proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
+    if user_input.lower() == 'exit':
+        print("Goodbye!")
+        sys.exit()
+    
+    # Add user input to all chat histories
+    roles = ['user', 'user', 'user', 'user']
+    strings = [user_input, user_input, user_input, user_input]
+    proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
 
-        role = 'user'
-        string = 'Moderator, you may now begin the debate. Please tell the Proponent and Opponent the rules of the debate.'
-        update_moderator(moderator_chat_history, role, string)
-        print("\nModerator, you may now begin the debate. Please tell the Proponent and Opponent the rules of the debate.")
+    role = 'user'
+    string = 'Moderator, you may now begin the debate. Please tell the Proponent and Opponent the rules of the debate.'
+    update_moderator(moderator_chat_history, role, string)
+    print("\nModerator, you may now begin the debate. Please tell the Proponent and Opponent the rules of the debate.")
 
-        # Generate Moderator's initial instructions
-        moderator_response = ollama.chat(model=desiredModel, messages=moderator_chat_history)['message']['content']
-        print('\nModerator:', moderator_response)
+    # Generate Moderator's initial instructions
+    moderator_response = ollama.chat(model=desiredModel, messages=moderator_chat_history)['message']['content']
+    print('\nModerator:', moderator_response)
 
-        roles = ['user', 'user', 'assistant', 'assistant']
-        strings = [moderator_response, moderator_response, moderator_response, moderator_response]
+    roles = ['user', 'user', 'assistant', 'assistant']
+    strings = [moderator_response, moderator_response, moderator_response, moderator_response]
+    update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
+
+    # Debate rounds
+    for _ in range(round_num):
+        # Proponent's response
+        proponent_response = ollama.chat(model=desiredModel, messages=proponent_chat_history)['message']['content']
+        print('\nProponent:', proponent_response)
+
+        roles = ['assistant', 'user', 'assistant', 'assistant']
+        strings = [proponent_response, proponent_response, proponent_response, proponent_response]
         update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
 
-        # Debate rounds
-        for _ in range(round_num):
-            # Proponent's response
-            proponent_response = ollama.chat(model=desiredModel, messages=proponent_chat_history)['message']['content']
-            print('\nProponent:', proponent_response)
+        # Opponent's response
+        opponent_response = ollama.chat(model=desiredModel, messages=opponent_chat_history)['message']['content']
+        print('\nOpponent:', opponent_response)
 
-            roles = ['assistant', 'user', 'assistant', 'assistant']
-            strings = [proponent_response, proponent_response, proponent_response, proponent_response]
-            update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
-
-            # Opponent's response
-            opponent_response = ollama.chat(model=desiredModel, messages=opponent_chat_history)['message']['content']
-            print('\nOpponent:', opponent_response)
-
-            roles = ['user', 'assistant', 'assistant', 'assistant']
-            strings = [opponent_response, opponent_response, opponent_response, opponent_response]
-            update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
-
-        moderator_chat_history.append({'role': 'user', 'content': 'Moderator, you may now tell the Author the plot and ideas for the story based on the debate between the Proponent and Opponent.'})
-        print('\nModerator, you may now tell the Author the plot and ideas for the story based on the debate between the Proponent and Opponent.')
-
-        # Moderator summarizes and provides final instructions
-        moderator_final_response = ollama.chat(model=desiredModel, messages=moderator_chat_history)['message']['content']
-        print('\nModerator:', moderator_final_response)
-
-        roles = ['assistant', 'assistant', 'assistant', 'user']
-        strings = [moderator_final_response, moderator_final_response, moderator_final_response, moderator_final_response]
+        roles = ['user', 'assistant', 'assistant', 'assistant']
+        strings = [opponent_response, opponent_response, opponent_response, opponent_response]
         update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
 
-        # Author generates the final story
-        author_response = ollama.chat(model=desiredModel, messages=author_chat_history)['message']['content']
-        print('\nAuthor:', author_response)
+    moderator_chat_history.append({'role': 'user', 'content': 'Moderator, you may now tell the Author the plot and ideas for the story based on the debate between the Proponent and Opponent.'})
+    print('\nModerator, you may now tell the Author the plot and ideas for the story based on the debate between the Proponent and Opponent.')
 
-        i += 1
+    # Moderator summarizes and provides final instructions
+    moderator_final_response = ollama.chat(model=desiredModel, messages=moderator_chat_history)['message']['content']
+    print('\nModerator:', moderator_final_response)
+
+    roles = ['assistant', 'assistant', 'assistant', 'user']
+    strings = [moderator_final_response, moderator_final_response, moderator_final_response, moderator_final_response]
+    update_chat_history(proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, roles, strings)
+
+    # Author generates the final story
+    author_response = ollama.chat(model=desiredModel, messages=author_chat_history)['message']['content']
+    print('\nAuthor:', author_response)
+
+    i += 1
+    return author_response

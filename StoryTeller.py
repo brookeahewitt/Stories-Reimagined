@@ -57,10 +57,17 @@ else:
 
 
 # This file includes the ToT-to-MAD pipeline
+while True:
+    # Can implement ToT here and get a result to feed into MAD 
+    ToT_result = ToTloop(given_story = story_string, human_response= args.human, max_depth = args.depth)
 
-# Can implement ToT here and get a result to feed into MAD 
-ToT_result = ToTloop(given_story = story_string, human_response= args.human, max_depth = args.depth)
+    # Can leave ToT_result as None if want to run MAD loop by itself
+    MAD_result = MAD_loop(ToT_result, proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, args.rounds)
 
+    user_input = input("\nYou: ")
 
-# Can leave ToT_result as None if want to run MAD loop by itself
-MAD_loop(ToT_result, proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history, args.rounds)
+    if user_input.lower() == 'exit':
+        print("Goodbye!")
+        sys.exit()
+    
+    story_string += "This was the story that was generated:\n" + MAD_result + "\n This is my request: " + user_input
