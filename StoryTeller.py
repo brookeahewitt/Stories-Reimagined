@@ -32,6 +32,9 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+# Initialize chat history
+proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = initialize_chat_history()
+print("Author:", story_intro_prompt())
 
 story_string = None
 
@@ -49,13 +52,11 @@ if args.story is not None:
     except Exception as e:
         print(f"An error occurred: {e}")
         sys.exit(1)
+else:
+    story_string = user_input = input("\nYou: ")
 
 
 # This file includes the ToT-to-MAD pipeline
-# Initialize chat history
-proponent_chat_history, moderator_chat_history, opponent_chat_history, author_chat_history = initialize_chat_history()
-print("Author:", story_intro_prompt())
-
 
 # Can implement ToT here and get a result to feed into MAD 
 ToT_result = ToTloop(given_story = story_string, human_response= args.human, max_depth = args.depth)
