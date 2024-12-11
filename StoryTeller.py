@@ -15,7 +15,7 @@ parser.add_argument(
 parser.add_argument(
     '--human', 
     action='store_true', 
-    help= "If input is true, then story feedback in Tree of Thoughts is done by human input, rather than semi-random critisism"
+    help= "If input is true, then story feedback in Tree of Thoughts is done by human input, rather than semi-random criticism"
 )
 parser.add_argument(
     '--depth', 
@@ -35,7 +35,7 @@ args = parser.parse_args()
 
 story_string = None
 
-# Validate story file
+# Validate story file +                                                                                                          
 if args.story is not None:
     if not args.story.endswith('.txt'):
         print("Error: File must have a .txt")
